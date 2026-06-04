@@ -22,6 +22,7 @@ client.on('connect', () => {
   console.log('Conectado al broker MQTT');
   client.subscribe(mqttTopic, (err) => {
     if(err) console.log('Error al suscribirse:', err);
+    else console.log('Suscripción OK');
   });
 });
 
@@ -34,6 +35,6 @@ app.get('/api/data', (req, res) => {
   res.json(latestData);
 });
 
+// Railway requiere usar process.env.PORT
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Proxy corriendo en puerto ${PORT}`));
-
