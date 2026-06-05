@@ -11,13 +11,16 @@ const mqttUser = 'planta';
 const mqttPass = 'planta';
 const mqttTopic = 'planta/linea1';
 
+// --- Datos iniciales ---
 let latestData = { 
-  faja1: "-", 
-  faja2: "-", 
-  bomba: "-", 
-  servoMov: "-", 
-  sensorReflectivo1: false,
-  sensorReflectivo2: false,
+  faja1: false,
+  faja2: false,
+  bomba: false,
+  servo: false,
+  capacitivo: false,
+  reflectivo1: false,
+  reflectivo2: false,
+  inductivo: false,
   botellasEntrada: 0,
   botellasSalida: 0,
   distancia: 0
@@ -40,7 +43,23 @@ client.on('connect', () => {
 
 client.on('message', (topic, message) => {
   try {
-    latestData = JSON.parse(message.toString());
+    // Parsear JSON recibido
+    const msg = JSON.parse(message.toString());
+    
+    // Asignar solo los campos que necesita el dashboard
+    latestData = {
+      faja1: msg.faja1 || false,
+      faja2: msg.faja2 || false,
+      bomba: msg.bomba || false,
+      servo: msg.servo || false,
+      capacitivo: msg.capacitivo || false,
+      reflectivo1: msg.reflectivo1 || false,
+      reflectivo2: msg.reflectivo2 || false,
+      inductivo: msg.inductivo || false,
+      botellasEntrada: msg.botellasEntrada || 0,
+      botellasSalida: msg.botellasSalida || 0,
+      distancia: msg.distancia || 0
+    };
   } catch(e) {
     console.log('Error parseando JSON', e);
   }
