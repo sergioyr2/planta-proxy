@@ -23,6 +23,7 @@ let latestData = {
   distancia: 0
 };
 
+// --- Conexión MQTT ---
 const client = mqtt.connect(mqttBroker, {
   username: mqttUser,
   password: mqttPass,
@@ -38,39 +39,18 @@ client.on('connect', () => {
 });
 
 client.on('message', (topic, message) => {
-  try { latestData = JSON.parse(message.toString()); }
-  catch(e) { console.log('Error parseando JSON', e); }
+  try {
+    latestData = JSON.parse(message.toString());
+  } catch(e) {
+    console.log('Error parseando JSON', e);
+  }
 });
 
-// --- Modo simulación opcional ---
-const USE_SIMULATION = true;
-
-function generateSimulatedData() {
-  return {
-    faja1: Math.random() > 0.2 ? "encendida" : "apagada",
-    faja2: Math.random() > 0.25 ? "encendida" : "apagada",
-    bomba: Math.random() > 0.3 ? "encendida" : "apagada",
-    servoMov: Math.random() > 0.5 ? "activo" : "inactivo",
-    sensorReflectivo1: Math.random() > 0.4,
-    sensorReflectivo2: Math.random() > 0.3,
-    botellasEntrada: Math.floor(Math.random() * 3),
-    botellasSalida: Math.floor(Math.random() * 2),
-    distancia: (Math.random() * 15 + 5).toFixed(1)
-  };
-}
-
-if (USE_SIMULATION) {
-  setInterval(() => {
-    latestData = generateSimulatedData();
-    console.log("Datos simulados:", latestData);
-  }, 1000);
-}
-
-// --- API para dashboard ---
+// --- API REST ---
 app.get('/api/data', (req, res) => {
   res.json(latestData);
 });
 
-// --- Railway usa process.env.PORT ---
+// --- Puerto ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Proxy corriendo en puerto ${PORT}`));
