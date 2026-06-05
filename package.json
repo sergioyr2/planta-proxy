@@ -1,7 +1,7 @@
 {
   "name": "planta-proxy",
   "version": "1.0.0",
-  "description": "",
+  "description": "Proxy MQTT → REST API para dashboard Planta de Botellas",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
